@@ -1,0 +1,10 @@
+pandas
+tqdm
+dtale
+yfinance
+yahoofinancials
+requests
+sklearn
+matplotlib
+pytorch_tabnet
+dateutil

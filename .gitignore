@@ -1,0 +1,10 @@
+tests
+models
+backtest
+*__pycache__*
+balanceSheetHistory.csv
+cashflowStatementHistory.csv
+dividends.csv
+incomeStatementHistory.csv
+shares.csv
+data
