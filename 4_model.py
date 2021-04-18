@@ -8,6 +8,9 @@ from datetime import datetime
 import numpy as np
 from utils import process_data
 
+# seed
+np.random.seed(1)
+
 # Load data
 data = pd.read_csv(f"data/data_clean.csv")
 # Format date
@@ -41,8 +44,8 @@ clf.fit(X_train=X_train,
         eval_set=[(X_train, y_train), (X_valid, y_valid)],
         eval_name=['train', 'valid'],
         eval_metric=['auc'],
-        max_epochs=200,
-        patience=100,
+        max_epochs=80,
+        patience=20,
         batch_size=1024,
         virtual_batch_size=128,
         num_workers=0,

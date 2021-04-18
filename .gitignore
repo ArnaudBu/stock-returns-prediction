@@ -7,4 +7,6 @@ cashflowStatementHistory.csv
 dividends.csv
 incomeStatementHistory.csv
 shares.csv
-data.csv
+data_clean.csv
+data_evol_clean.csv
+prices_daily.csv

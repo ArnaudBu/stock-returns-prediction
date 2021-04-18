@@ -55,7 +55,7 @@ for i in range(len(dates)-1):
             eval_set=[(X_train, y_train)],
             eval_name=['train'],
             eval_metric=['auc'],
-            max_epochs=18,
+            max_epochs=13,
             patience=0,
             batch_size=1024,
             virtual_batch_size=128,

@@ -137,14 +137,10 @@ data_evol = data_evol.drop(columns=["symbol_evol"])
 percent_missing = data.isnull().sum() * 100 / len(data)
 print(percent_missing.sort_values())
 
-# Assess missing values
-percent_missing = data_evol.isnull().sum() * 100 / len(data)
-print(percent_missing.sort_values())
-
 # DTale
-d = dtale.show(data)
+# d = dtale.show(data)
 
-d.open_browser()
+# d.open_browser()
 
 # Save data
 data.to_csv("data/data_clean.csv", index=False)
