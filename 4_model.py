@@ -9,7 +9,7 @@ import numpy as np
 from utils import process_data
 
 # seed
-np.random.seed(1)
+np.random.seed(0)
 
 # Load data
 data = pd.read_csv(f"data/data_clean.csv")
@@ -45,7 +45,7 @@ clf.fit(X_train=X_train,
         eval_name=['train', 'valid'],
         eval_metric=['auc'],
         max_epochs=80,
-        patience=20,
+        patience=50,
         batch_size=1024,
         virtual_batch_size=128,
         num_workers=0,

@@ -7,7 +7,7 @@ from tqdm import tqdm
 # Modify project and reference index according to your needs
 for project in ["sp500", "nyse", "nasdaq"]:
     print(project)
-    ref_index = "^GSPC"
+    ref_index = "^IXIC"
 
     # Load data
     prices = pd.read_csv(f"data/{project}/prices_daily.csv")

@@ -33,9 +33,7 @@ prices = prices[prices.index >= min(probas.index)]
 probas[prices.isnull()] = np.nan
 probas[probas == 0] = np.nan
 
-# Returns on prices (remove GEG because of error)
-prices.drop(columns=['GEG'], inplace=True)
-probas.drop(columns=['GEG'], inplace=True)
+# Returns on prices
 returns = prices.pct_change()
 
 
@@ -99,9 +97,12 @@ ax.set_title("Backtest based on the data from 2018 to 2021", fontsize=20)
 # Test on the numbers
 try:
     d = pd.read_csv(f"backtest/yields.csv")
+    a = max(d.nb)+1
 except Exception as e:
     d = pd.DataFrame()
-for i in range(max(d.nb)+1, 2001):
+    a = 1
+
+for i in range(a, 2001):
     weights = probas.apply(lambda x: orderselect(x, i),
                            axis=1,
                            result_type="expand")
