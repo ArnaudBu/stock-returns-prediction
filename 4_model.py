@@ -82,9 +82,12 @@ fpr['test'], tpr['test'], _ = roc_curve(y_score=clf.predict_proba(X_test)[:, 1],
 plt.figure()
 colors = ['aqua', 'darkorange', 'cornflowerblue']
 names = ['train', 'valid', 'test']
-for name, color in zip(names, colors):
+legends = [f'train ({round(train_auc, 3)})',
+           f'validation ({round(valid_auc, 3)})',
+           f'test ({round(test_auc, 3)})']
+for name, color, legend in zip(names, colors, legends):
     plt.plot(fpr[name], tpr[name], color=color, lw=2,
-             label='{0}'.format(name))
+             label='{0}'.format(legend))
 plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
@@ -95,7 +98,33 @@ plt.legend(loc="lower right")
 plt.show()
 
 # Feature importance
+features_sorted = []
+importance_sorted = []
 print("\nFeature importance AUC\n")
 f = clf.feature_importances_
 for i in np.argsort(f):
     print(f"{features[i]}: {f[i]}")
+    features_sorted += [features[i]]
+    importance_sorted += [f[i]]
+
+# Feature importance plot
+fig, ax = plt.subplots()
+features_sorted[18:33] = ["Performance against market",
+                          "Net Borrowings",
+                          "Total Assets",
+                          "Cost Of Revenue",
+                          "Capital Surplus",
+                          "Change To Liabilities",
+                          "Capital Expenditures",
+                          "Common Stock",
+                          "Gross Profit",
+                          "Positive performance",
+                          "Net Income",
+                          "Returns level",
+                          "Change To Net Income",
+                          "Dividends level",
+                          "Other Current Liabilities"]
+ax.barh(features_sorted[18:33], importance_sorted[18:33], align="center")
+ax.set_xlabel('')
+ax.set_title('Variable importance for 15 most outstanding variables')
+plt.show()

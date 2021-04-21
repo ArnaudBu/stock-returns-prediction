@@ -4,6 +4,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import pyfolio as pf
+from pandas.plotting import table
 
 # Import prices
 prices_list = [pd.read_csv(f"data/sp500/prices_daily.csv"),
@@ -52,7 +54,7 @@ def orderselect(x, n=100):
 # nasdaq
 nasdaq_returns = returns['^IXIC']
 nasdaq_returns = (1 + nasdaq_returns).cumprod()
-nasdaq_returns.name = "nasdaq"
+nasdaq_returns.name = "Nasdaq"
 
 # s&p
 sp_returns = returns['^GSPC']
@@ -91,7 +93,7 @@ strat1000.plot(ax=ax, color="seagreen")
 nasdaq_returns.plot(ax=ax, color="red")
 sp_returns.plot(ax=ax, color="purple")
 plt.legend(loc="best")
-ax.set_ylabel("cummulative return")
+ax.set_ylabel("Cummulative return")
 ax.set_title("Backtest based on the data from 2018 to 2021", fontsize=20)
 
 # Test on the numbers
@@ -116,8 +118,40 @@ for i in range(a, 2001):
 
 # Plot
 fig, ax = plt.subplots(figsize=(16, 8))
-d['yield'][d['nb'] < 100].plot(ax=ax, color="dodgerblue")
-plt.legend(loc="best")
+d['yield'][d['nb'] < 10000].plot(ax=ax, color="dodgerblue")
+# plt.legend(loc="best")
 ax.set_ylabel("cummulative return")
-ax.set_title("Yield for a strategy consisting of the x most promising stocks",
+ax.set_title("Returns for a strategy consisting of the x most promising stocks",
              fontsize=20)
+
+# Tear sheet
+weights = probas.apply(softmax, axis=1)
+softmaxstrat = returns.multiply(weights).apply(np.nansum, axis=1)
+softmax = pf.timeseries.perf_stats(softmaxstrat)
+weights = probas.apply(lambda x: orderselect(x, 100),
+                       axis=1,
+                       result_type="expand")
+weights.columns = probas.columns
+top100strat = returns.multiply(weights).apply(np.nansum, axis=1)
+top100 = pf.timeseries.perf_stats(top100strat)
+weights = probas.apply(lambda x: orderselect(x, 1000),
+                       axis=1,
+                       result_type="expand")
+weights.columns = probas.columns
+top1000strat = returns.multiply(weights).apply(np.nansum, axis=1)
+top1000 = pf.timeseries.perf_stats(top1000strat)
+nasdaq = pf.timeseries.perf_stats(returns['^IXIC'])
+sp500 = pf.timeseries.perf_stats(returns['^GSPC'])
+
+tearsheet = pd.concat({'Softmax': softmax,
+                       'Top 100': top100,
+                       'Top 1000': top1000,
+                       'Nasdaq': nasdaq,
+                       'S&P 500': sp500
+                       }, axis=1)
+
+ax = plt.subplot(111, frame_on=False)
+ax.xaxis.set_visible(False)
+ax.yaxis.set_visible(False)
+
+table(ax, tearsheet)
