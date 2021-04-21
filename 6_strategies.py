@@ -149,9 +149,9 @@ tearsheet = pd.concat({'Softmax': softmax,
                        'Nasdaq': nasdaq,
                        'S&P 500': sp500
                        }, axis=1)
-
+tearsheet = tearsheet.round(2)
+tearsheet.fillna("", inplace=True)
 ax = plt.subplot(111, frame_on=False)
 ax.xaxis.set_visible(False)
 ax.yaxis.set_visible(False)
-
 table(ax, tearsheet)
