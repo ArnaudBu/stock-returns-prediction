@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyfolio as pf
 from pandas.plotting import table
+from datetime import datetime
 
 # Import prices
 prices_list = [pd.read_csv(f"data/sp500/prices_daily.csv"),
@@ -75,6 +76,15 @@ weights.columns = probas.columns
 strat100 = returns.multiply(weights).apply(np.nansum, axis=1)
 strat100 = (1 + strat100).cumprod()
 strat100.name = "Best 100"
+
+# Analysis on best performing stocks
+stocks = returns.copy()
+stocks = stocks[stocks.index > datetime(year=2020, month=1, day=1)]
+stocks_full = stocks.copy()
+stocks[weights.isna()] = 0
+cols = (1+stocks).cumprod().iloc[-1].nlargest(10).index.tolist()
+stocks = (1 + stocks[cols]).cumprod()
+stocks_full = (1 + stocks_full[cols]).cumprod()
 
 # Order and select
 weights = probas.apply(lambda x: orderselect(x, 1000),
@@ -155,3 +165,25 @@ ax = plt.subplot(111, frame_on=False)
 ax.xaxis.set_visible(False)
 ax.yaxis.set_visible(False)
 table(ax, tearsheet)
+
+# Plot comparision
+
+stocks.plot(ylabel="Cumulative returns", title="Cumulative returns with model")
+
+stocks_full.plot(ylabel="Cumulative returns", title="Cumulative returns without model")
+
+# Plot
+fig, ax = plt.subplots()
+stocks['OESX'].plot(ax=ax, color="darkorange", label="With model")
+stocks_full['OESX'].plot(ax=ax, color="dodgerblue", label="Without model")
+plt.legend(loc="best")
+ax.set_ylabel("Cummulative return")
+ax.set_title("Returns comparison from the use of the model for OESX stock", fontsize=20)
+
+# Plot
+fig, ax = plt.subplots()
+stocks['SAVA'].plot(ax=ax, color="darkorange", label="With model")
+stocks_full['SAVA'].plot(ax=ax, color="dodgerblue", label="Without model")
+plt.legend(loc="best")
+ax.set_ylabel("Cummulative return")
+ax.set_title("Returns comparison from the use of the model for SAVA stock", fontsize=20)
